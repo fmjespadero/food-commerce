@@ -92,7 +92,6 @@
                     'height': 'calc(100vh - ' + headerHeight + 'px)'
                 })
             });
-
         </script>
     @endpush
 

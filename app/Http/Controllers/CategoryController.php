@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
 {
@@ -12,8 +14,18 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all(); // 10 items per page
-        return view('dashboard.category.index', compact('categories'));
+        if (request()->ajax()) {
+            $categories = Category::query()->orderBy('id', 'desc')->get();
+    
+            return DataTables::of($categories)
+                ->addColumn('action', function ($category) {
+                    return view('components.dt-action-buttons', compact('category'))->render();
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+    
+        return view('dashboard.category.index');
     }
 
     /**
@@ -22,14 +34,19 @@ class CategoryController extends Controller
     public function create()
     {
         //
+        return view('dashboard.category.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        //
+        $validatedData = $request->validated();
+
+        Category::create($validatedData);
+
+        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
     }
 
     /**
@@ -45,15 +62,21 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+        return view('dashboard.category.edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(CategoryRequest $request, Category $category)
     {
-        //
+        // Validate and update the category
+    $validatedData = $request->validated();
+    
+    // Ensure data is correctly passed and updated
+    $category->update($validatedData);
+
+    return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
     }
 
     /**
@@ -61,6 +84,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return response()->json(['success' => 'Category deleted successfully.']);
     }
 }

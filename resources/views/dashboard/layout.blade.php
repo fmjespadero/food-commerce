@@ -102,13 +102,26 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css">
     <style type="text/css">
         
-        {{-- You can add AdminLTE customizations here --}}
+        /* {{-- You can add AdminLTE customizations here --}} */
 
         .content-wrapper{
             overflow-y: scroll;
         }
         .sidebar{
             overflow: scroll;
+        }
+
+        #ProductTable_length label, #ProductTable_info {
+            margin: 0;
+            padding: 0;
+        }
+        .dt-button-collection .dt-button {
+            min-width: unset !important;
+        }
+        @media screen and (max-width: 767px) {
+            .dt-buttons {
+                text-align: start !important;
+            }
         }
     </style>
     @endpush

@@ -91,9 +91,10 @@
             order: [],
         });
 
-        $(document).on('click', '#category-delete', function () {
+        $(document).on('click', '#dt-action-delete', function () {
             var url = $(this).data('url');
-            console.log(url)
+            var token = $('meta[name="csrf-token"]').attr('content');
+            
             Swal.fire({
                 title: 'Are you sure?',
                 text: 'You won\'t be able to revert this!',
@@ -106,9 +107,10 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         url: url,
-                        type: 'DELETE',
+                        type: 'POST',
                         data: {
-                            _token: $('meta[name="csrf-token"]').attr('content')
+                            _token: token,
+                            _method: 'DELETE'
                         },
                         success: function (response) {
                             // Reload DataTable to reflect the changes
@@ -130,138 +132,8 @@
                 }
             });
         });
-
     });
-    //     $(document).on('click', '#deleteCategory', function () {
-    //     console.log(id)
-    //     Swal.fire({
-    //         title: 'Are you sure?',
-    //         text: "You won't be able to revert this!",
-    //         icon: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonColor: '#3085d6',
-    //         cancelButtonColor: '#d33',
-    //         confirmButtonText: 'Yes, delete it!'
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             $.ajax({
-    //                 url: `categories/${id}`,  // Construct the URL using the id parameter
-    //                 type: 'DELETE',
-    //                 data: {
-    //                     _token: $('meta[name="csrf-token"]').attr('content')
-    //                 },
-    //                 success: function(result) {
-    //                     $('#CategoryTable').DataTable().ajax.reload();
-    //                     Swal.fire(
-    //                         'Deleted!',
-    //                         'Category has been deleted.',
-    //                         'success'
-    //                     );
-    //                 },
-    //                 error: function(xhr) {
-    //                     Swal.fire(
-    //                         'Error!',
-    //                         'There was an error deleting the category.',
-    //                         'error'
-    //                     );
-    //                 }
-    //             });
-    //         }
-    //     });
-    // });
-
-        
-    // })
-    
-    // function editCategory(id) {
-    //     window.location.href += `/${id}/edit`;
-    // }
-
-    
 </script>
 @endpush
 
 
-{{-- // $(document).ready(function() {
-    //     $.ajaxSetup({
-    //         headers: {
-    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //         }
-    //     });
-
-    //     function editCategory(id) {
-    //         window.location.href = `/categories/${id}/edit`;
-    //     }
-
-    //     function deleteCategory(id) {
-    //         if (confirm('Are you sure you want to delete this category?')) {
-    //             $.ajax({
-    //                 url: `/categories/${id}`,
-    //                 type: 'DELETE',
-    //                 data: {
-    //                     "_token": "{{ csrf_token() }}",
-    //                 },
-    //                 success: function(result) {
-    //                     $('#CategoryTable').DataTable().ajax.reload();
-    //                     toastr.success('Category deleted successfully');
-    //                 },
-    //                 error: function(xhr) {
-    //                     toastr.error('Error deleting category');
-    //                 }
-    //             });
-    //         }
-    //     }
-
-    //     if ($.fn.DataTable.isDataTable('#CategoryTable')) {
-    //         $('#CategoryTable').DataTable().destroy();
-    //     }
-        
-    //     $('#CategoryTable').DataTable({
-    //         dom: '<"row" <"col-sm-6" B> <"col-sm-6 d-flex justify-content-end" f> >' +
-    //             '<"row" <"col-12" tr> >' +
-    //             '<"d-flex justify-content-between align-items-center" <"d-flex gap-5 align-items-center" <l> <i> > <p> >',
-    //         buttons: [
-    //             {
-    //                 extend: 'excel',
-    //                 text: '<i class="text-white fas fa-fw fa-lg fa-file-excel"></i> Export to Excel',
-    //                 className: 'btn bg-success'
-    //             },
-    //             {
-    //                 extend: 'pdf',
-    //                 text: '<i class="text-white fas fa-fw fa-lg fa-file-pdf"></i> Export to PDF',
-    //                 className: 'btn bg-danger'
-    //             },
-    //             {
-    //                 text: '<i class="text-white fas fa-fw fa-lg fa-plus"></i> Create',
-    //                 className: 'btn bg-primary',
-    //                 action: function ( e, dt, node, config ) {
-    //                     window.location.href += "/create";
-    //                 }
-    //             }
-    //         ],
-    //         processing: true,
-    //         serverSide: true,
-    //         ajax: '/categories/data', // You need to create this endpoint
-    //         columns: [
-    //             { data: 'name', name: 'name' },
-    //             { data: 'slug', name: 'slug' },
-    //             { data: 'description', name: 'description' },
-    //             { 
-    //                 data: 'id', 
-    //                 name: 'actions', 
-    //                 orderable: false, 
-    //                 searchable: false,
-    //                 render: function(data, type, row, meta) {
-    //                     return `
-    //                         <button onclick="editCategory(${data})" class="mx-1 shadow btn btn-xs btn-default text-primary" title="Edit">
-    //                             <i class="fa fa-lg fa-fw fa-pen"></i>
-    //                         </button>
-    //                         <button onclick="deleteCategory(${data})" class="mx-1 shadow btn btn-xs btn-default text-danger" title="Delete">
-    //                             <i class="fa fa-lg fa-fw fa-trash"></i>
-    //                         </button>
-    //                     `;
-    //                 }
-    //             }
-    //         ],
-    //     });
-    // }); --}}

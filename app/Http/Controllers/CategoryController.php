@@ -19,7 +19,10 @@ class CategoryController extends Controller
     
             return DataTables::of($categories)
                 ->addColumn('action', function ($category) {
-                    return view('components.dt-action-buttons', compact('category'))->render();
+                    return view('components.dt-action-buttons', [
+                        'model' => $category,
+                        'routePrefix' => 'categories'
+                    ])->render();
                 })
                 ->rawColumns(['action'])
                 ->make(true);

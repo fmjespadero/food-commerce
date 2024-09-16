@@ -27,6 +27,7 @@ class ProductRequest extends FormRequest
             'price' => ['required', 'numeric', 'min:0'],
             'stock_quantity' => ['required', 'integer', 'min:0'],
             'category_id' => ['nullable', 'exists:categories,id'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],  // 2MB Max
         ];
     }
 
@@ -43,6 +44,14 @@ class ProductRequest extends FormRequest
             'price' => 'product price',
             'stock_quantity' => 'product quantity',
             'category_id' => 'product category',
+            'image' => 'product image'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'image.uploaded' => 'The product image field must not be greater than 2048 kilobytes.',
         ];
     }
 }

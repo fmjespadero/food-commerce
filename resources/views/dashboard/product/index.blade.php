@@ -6,6 +6,7 @@
 @section('content_body')
     @php
         $columns = [
+            ['title' => 'Image', 'data' => 'image', 'action', 'orderable' => false, 'searchable' => false],
             ['title' => 'Name', 'data' => 'name'],
             ['title' => 'Description', 'data' => 'description'],
             ['title' => 'Category', 'data' => 'category'],
@@ -15,7 +16,7 @@
         ];
     @endphp
 
-    <x-data-table id="ProductTable" :ajaxRoute="route('products.index')" :columns="$columns" />
+    <x-data-table id="ProductTable" :ajaxRoute="route('products.index')" :columns="$columns" :columnWidths="['0%', '15%', '0', '10%' ,'10%','10%','5%']"/>
     @include('components.delete-confirmation', ['id' => 'ProductTable'])
 @stop
 

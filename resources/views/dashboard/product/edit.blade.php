@@ -10,7 +10,7 @@
     <div class="container-fluid">
         <h2 class="mt-4 mb-4">Edit Product</h2>
         
-        <form method="POST" action="{{ route('products.update', $product->id) }}">
+        <form method="POST" action="{{ route('products.update', $product->id) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             
@@ -60,6 +60,23 @@
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
+
+            {{-- Image Input --}}
+            <div class="mb-3">
+                <label for="image" class="form-label">Product Image</label>
+                <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
+                @error('image')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            
+            {{-- Display current image if it exists --}}
+            @if ($product->getFirstMediaUrl())
+                <div class="mb-3">
+                    <img src="{{ $product->getFirstMediaUrl() }}" alt="Product Image" class="img-thumbnail" style="max-width: 200px;">
+                    <p>Current Image</p>
+                </div>
+            @endif
             
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
@@ -69,7 +86,6 @@
 {{-- Push extra CSS --}}
 @push('css')
     {{-- Add here extra stylesheets --}}
-    
 @endpush
 
 {{-- Push extra scripts --}}

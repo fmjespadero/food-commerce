@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -16,9 +17,14 @@ class ProductController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $products = Product::query()->orderBy('id', 'desc')->get();
+            $products = Product::select(['name', 'description', 'stock_quantity', 'category_id', 'price', 'id'])
+            ->with('category'); // Ensure you include relationships if necessary
     
             return DataTables::of($products)
+                ->addColumn('image', function ($product) {
+                    $imageUrl = $product->getFirstMediaUrl();
+                    return $imageUrl ? view('components.dt-image', compact('imageUrl')) : 'No Image';
+                })
                 ->addColumn('category', function ($product) {
                     return $product->category ? $product->category->name : 'N/A';
                 })
@@ -28,7 +34,7 @@ class ProductController extends Controller
                         'routePrefix' => 'products'
                     ])->render();
                 })
-                ->rawColumns(['action','category'])
+                ->rawColumns(['image', 'action', 'category'])
                 ->make(true);
         }
     
@@ -50,9 +56,18 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $validatedData = $request->validated();
-
-        Product::create($validatedData);
-
+       
+        $product = Product::create($validatedData);
+        
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $uniqueFileName = Str::uuid() . '.' . $image->getClientOriginalExtension();
+        
+            $product->addMedia($image)
+                    ->usingFileName($uniqueFileName)
+                    ->toMediaCollection();
+        }
+        
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
@@ -70,7 +85,8 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = Category::all();
-        return view('dashboard.product.edit', compact('product', 'categories'));
+        $imageCount = $product->getMedia()->count();
+        return view('dashboard.product.edit', compact('product', 'categories', 'imageCount'));
     }
 
     /**
@@ -79,14 +95,25 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product)
     {
         $validatedData = $request->validated();
-            
 
         $product->update($validatedData);
+
+        if ($request->hasFile('image')) {
+            if ($product->hasMedia()) {
+                $product->clearMediaCollection();
+            }
+            
+            $image = $request->file('image');
+            $uniqueFileName = Str::uuid() . '.' . $image->getClientOriginalExtension();
+            
+            $product->addMedia($image)
+                    ->usingFileName($uniqueFileName)
+                    ->toMediaCollection();
+        }
 
         return redirect()->route('products.index')
             ->with('success', 'Product updated successfully.');
     }
-
     /**
      * Remove the specified resource from storage.
      */

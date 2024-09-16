@@ -13,7 +13,7 @@
         ];
     @endphp
 
-    <x-data-table id="CategoryTable" :ajaxRoute="route('categories.index')" :columns="$columns" />
+    <x-data-table id="CategoryTable" :ajaxRoute="route('categories.index')" :columns="$columns" :columnWidths="['15%', '15%', '0', '10%' ]"/>
     @include('components.delete-confirmation', ['id' => 'CategoryTable'])
 @stop
 

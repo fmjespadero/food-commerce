@@ -16,7 +16,7 @@
         ];
     @endphp
 
-    <x-data-table id="ProductTable" :ajaxRoute="route('products.index')" :columns="$columns" :columnWidths="['0%', '15%', '0', '10%' ,'10%','10%','5%']"/>
+    <x-data-table id="ProductTable" :ajaxRoute="route('products.index')" :columns="$columns" :columnWidths="['0%', '15%', '0', '10%' ,'10%','10%','10%']"/>
     @include('components.delete-confirmation', ['id' => 'ProductTable'])
 @stop
 
